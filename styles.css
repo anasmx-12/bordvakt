@@ -1,0 +1,19 @@
+body{margin:0}
+a{color:#C2410C}
+a:hover{color:#9A3412}
+html{scroll-behavior:smooth}
+@keyframes ninA{from{opacity:0;transform:translateY(-14px) scale(.98)}
+to{opacity:1;transform:none}
+}
+@keyframes ninB{from{opacity:0;transform:translateY(-14px) scale(.98)}
+to{opacity:1;transform:none}
+}
+@keyframes pulse{0%,100%{opacity:1}
+50%{opacity:.35}
+}
+.nin-a{animation:ninA .5s cubic-bezier(.2,.8,.2,1)}
+.nin-b{animation:ninB .5s cubic-bezier(.2,.8,.2,1)}
+.live-dot{animation:pulse 1.6s ease-in-out infinite}
+input[type=range]{accent-color:#C2410C}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #2563EB;outline-offset:2px}
+

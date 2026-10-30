@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bordvakt – AI-driven servicestöd för restauranger</title>
+<meta name="description" content="Bordvakt analyserar bordens status i realtid och skickar prioriterade notiser till personalen. Ingen ansiktsigenkänning, ingen videolagring.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+
+<div style="font-family: Inter, system-ui, sans-serif; color: #0F1419; background: #F5F4F0; line-height: 1.55; font-size: 16px">
+
+<!-- NAV -->
+<header style="border-bottom: 1px solid #E4E2DB; background: #F5F4F0">
+<div style="max-width: 1200px; margin: 0 auto; padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+<a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0F1419">
+<svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" fill="#0F1419"></rect><path d="M6 16c2.8-4.6 6.2-7 10-7s7.2 2.4 10 7c-2.8 4.6-6.2 7-10 7s-7.2-2.4-10-7z" stroke="#FFFFFF" stroke-width="2"></path><circle cx="16" cy="16" r="3.2" fill="#FB923C"></circle></svg>
+<span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 21px; letter-spacing: -0.02em">Bordvakt</span>
+</a>
+<nav aria-label="Huvudmeny" style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 15px; font-weight: 500">
+<a href="#problem" style="color: #374151; text-decoration: none">Varför</a>
+<a href="#sa-fungerar" style="color: #374151; text-decoration: none">Så fungerar det</a>
+<a href="#roi" style="color: #374151; text-decoration: none">Lönsamhet</a>
+<a href="#gdpr" style="color: #374151; text-decoration: none">GDPR</a>
+<a href="#kontakt" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 10px; background: #0F1419; color: #FFFFFF; text-decoration: none; font-weight: 600">Boka demo</a>
+</nav>
+</div>
+</header>
+
+<!-- HERO -->
+<section id="top" style="max-width: 1200px; margin: 0 auto; padding: 72px 24px 88px; display: flex; flex-wrap: wrap; align-items: center; gap: 56px">
+<div style="flex: 1 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+<div style="display: inline-flex; align-self: flex-start; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid #D6D3CA; border-radius: 999px; font-size: 13px; font-weight: 600; color: #374151; background: #FFFFFF">
+<span class="live-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #C2410C"></span>
+Edge AI för restaurangens matsal
+</div>
+<h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(38px, 5vw, 62px); line-height: 1.04; letter-spacing: -0.035em">Missa aldrig en gäst. Låt AI optimera ert serviceflöde i realtid.</h1>
+<p style="margin: 0; font-size: 19px; color: #374151; max-width: 34em">Bordvakt kopplas till restaurangens befintliga kameror och ser direkt när ett bord behöver dukas av, när glasen är tomma eller när en gäst söker kontakt. Personalen får en prioriterad notis i plattan eller mobilen – och vet exakt vart de ska gå.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a href="#kontakt" style="display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 26px; border-radius: 12px; background: #C2410C; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 17px">Boka en kostnadsfri demo
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+</a>
+<a href="#sa-fungerar" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 24px; border-radius: 12px; border: 1.5px solid #0F1419; color: #0F1419; text-decoration: none; font-weight: 600; font-size: 17px">Se hur det fungerar</a>
+</div>
+<ul style="list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 14px; color: #374151">
+<li style="display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Ingen ansiktsigenkänning</li>
+<li style="display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Ingen videolagring</li>
+<li style="display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Fungerar med befintliga IP-kameror</li>
+</ul>
+</div>
+
+<!-- iPad mockup -->
+<div style="flex: 1 1 480px; min-width: 0; display: flex; justify-content: center">
+<div role="img" aria-label="Personalens iPad-vy: bordskarta och prioriterade notiser, till exempel Bord 3 behöver dukas av" style="width: 100%; max-width: 580px; background: #1A1F26; border-radius: 34px; padding: 16px; box-shadow: 0 40px 80px -30px rgba(15,20,25,.45)">
+<div style="background: #FFFFFF; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid #EEECE6">
+<div style="display: flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px">Matsalen · Kvällspass</div>
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #0F766E"><span class="live-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #0F766E"></span>Live · <span id="openCount">4</span> aktiva</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 0">
+<!-- floor -->
+<div style="flex: 1 1 200px; padding: 16px; background: #FAF9F6; border-right: 1px solid #EEECE6">
+<div style="font-size: 11px; font-weight: 600; color: #4B5563; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px">Bordskarta</div>
+<div id="tables" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<!-- fylls av script -->
+</div>
+</div>
+<!-- notifications -->
+<div style="flex: 1.3 1 240px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 300px">
+<div style="font-size: 11px; font-weight: 600; color: #4B5563; text-transform: uppercase; letter-spacing: .08em">Att göra nu</div>
+<div id="topNotif" class="nin-a" style="display: flex; gap: 12px; align-items: flex-start; padding: 12px; border-radius: 12px; background: #0F1419; color: #FFFFFF; box-shadow: 0 10px 24px -12px rgba(15,20,25,.6)">
+<div id="topChip" style="flex: none; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px"></div>
+<div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+<div id="topText" style="font-weight: 600; font-size: 14px"></div>
+<div id="topMeta" style="font-size: 12px; color: #D1D5DB"></div>
+</div>
+</div>
+<div id="rest" style="display:flex;flex-direction:column;gap:10px"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PROBLEM vs LÖSNING -->
+<section id="problem" style="background: #FFFFFF; border-top: 1px solid #E4E2DB; border-bottom: 1px solid #E4E2DB">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: flex; flex-direction: column; gap: 48px">
+<div style="max-width: 720px; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9A3412">Problemet</div>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; letter-spacing: -0.03em">Varje kväll läcker intäkter mellan borden.</h2>
+<p style="margin: 0; font-size: 18px; color: #374151">Under rusningen hinner ingen se allt. Det är inte personalens fel – det är ett överblicksproblem.</p>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: stretch">
+<div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; gap: 16px; padding: 22px; border-radius: 16px; background: #F5F4F0">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<div><h3 style="margin: 0 0 4px; font-size: 18px">Dötid mellan gäster</h3><p style="margin: 0; color: #374151">Bord står odukade medan nya sällskap väntar vid entrén – eller går vidare.</p></div>
+</div>
+<div style="display: flex; gap: 16px; padding: 22px; border-radius: 16px; background: #F5F4F0">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 3h10l-1.5 9a3.5 3.5 0 0 1-7 0z"></path><path d="M12 15.5V21"></path><path d="M8.5 21h7"></path></svg>
+<div><h3 style="margin: 0 0 4px; font-size: 18px">Missad mersäljning</h3><p style="margin: 0; color: #374151">Tomma glas och avslutade varmrätter blir sällan en ny beställning om ingen märker dem i tid.</p></div>
+</div>
+<div style="display: flex; gap: 16px; padding: 22px; border-radius: 16px; background: #F5F4F0">
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M13 4a2 2 0 1 0 0 .01"></path><path d="M7 21l3-6 3 2v4"></path><path d="M10 15l1-5 4 3 3 1"></path><path d="M6 11l3-2"></path></svg>
+<div><h3 style="margin: 0 0 4px; font-size: 18px">Stressad personal som springer i onödan</h3><p style="margin: 0; color: #374151">Varv efter varv genom matsalen för att leta efter vad som behöver göras – i stället för att göra det.</p></div>
+</div>
+</div>
+<div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 22px; padding: 36px; border-radius: 20px; background: #0F1419; color: #F3F4F6">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #FDBA74">Lösningen</div>
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; color: #FFFFFF">Ett digitalt extra par ögon i matsalen.</h3>
+<p style="margin: 0; color: #D1D5DB; font-size: 17px">Bordvakt bevakar varje bord samtidigt och sorterar uppgifterna efter vad som är viktigast just nu. Personalen behöver inte leta – systemet visar vägen.</p>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">
+<li style="display: flex; gap: 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FDBA74" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12l5 5L20 7"></path></svg><span><strong style="color: #FFFFFF">Snabbare avdukning</strong> – borden fylls på nytt tidigare.</span></li>
+<li style="display: flex; gap: 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FDBA74" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12l5 5L20 7"></path></svg><span><strong style="color: #FFFFFF">Proaktiv service</strong> – tomma glas och gäster som söker kontakt upptäcks direkt.</span></li>
+<li style="display: flex; gap: 12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FDBA74" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12l5 5L20 7"></path></svg><span><strong style="color: #FFFFFF">Mindre stress</strong> – rätt person till rätt bord, i rätt ordning.</span></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SÅ FUNGERAR DET -->
+<section id="sa-fungerar" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: flex; flex-direction: column; gap: 48px">
+<div style="max-width: 720px; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9A3412">Så fungerar det</div>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; letter-spacing: -0.03em">Tre steg. Ingen ny hårdvara i matsalen.</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 30px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E4E2DB">
+<div style="display: flex; align-items: center; justify-content: space-between"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #9A3412">01</span>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F1419" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h13l5-3v14l-5-3H3z"></path><circle cx="9.5" cy="12" r="2"></circle></svg></div>
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px; letter-spacing: -0.02em">Anslut</h3>
+<p style="margin: 0; color: #374151">Koppla systemet till restaurangens lokala IP-kameror på några minuter. Har ni inga kameror räcker enkla kamerasensorer.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 30px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E4E2DB">
+<div style="display: flex; align-items: center; justify-content: space-between"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #9A3412">02</span>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F1419" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M9 9h6v6H9z"></path><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"></path></svg></div>
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px; letter-spacing: -0.02em">Analysera</h3>
+<p style="margin: 0; color: #374151">AI-modellen tolkar bordens status i realtid – tallrikar, glas och stolar – helt utan att spara personuppgifter.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 30px; border-radius: 18px; background: #FFFFFF; border: 1px solid #E4E2DB">
+<div style="display: flex; align-items: center; justify-content: space-between"><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px; color: #9A3412">03</span>
+<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0F1419" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></div>
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px; letter-spacing: -0.02em">Agera</h3>
+<p style="margin: 0; color: #374151">Personalen får direktnotiser i platta eller mobil, sorterade efter prioritet, och kan agera direkt.</p>
+</div>
+</div>
+</section>
+
+<!-- ROI -->
+<section id="roi" style="background: #FFFFFF; border-top: 1px solid #E4E2DB; border-bottom: 1px solid #E4E2DB">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: flex; flex-direction: column; gap: 48px">
+<div style="max-width: 720px; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9A3412">Lönsamhet</div>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.1; letter-spacing: -0.03em">Därför tjänar restaurangen på det.</h2>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px">
+<div style="padding: 28px; border-radius: 18px; background: #F5F4F0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px">Högre bordsomsättning</h3>
+<p style="margin: 0; color: #374151">Snabbare avdukning betyder att nästa sällskap kan sätta sig tidigare – fler gäster per kväll.</p>
+</div>
+<div style="padding: 28px; border-radius: 18px; background: #F5F4F0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px">Ökad snittnota</h3>
+<p style="margin: 0; color: #374151">Proaktiv påfyllning av dryck och rätt tajmat dessertförslag lyfter varje nota.</p>
+</div>
+<div style="padding: 28px; border-radius: 18px; background: #F5F4F0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 22px">Optimerad bemanning</h3>
+<p style="margin: 0; color: #374151">Full överblick över matsalsgolvet under rusningstid – samma team räcker längre.</p>
+</div>
+</div>
+
+<!-- calculator -->
+<div style="display: flex; flex-wrap: wrap; gap: 0; border-radius: 22px; overflow: hidden; border: 1px solid #E4E2DB">
+<form onsubmit="return false" style="flex: 1 1 460px; padding: 36px; display: flex; flex-direction: column; gap: 26px; background: #FFFFFF">
+<div>
+<h3 style="margin: 0 0 6px; font-family: 'Space Grotesk', sans-serif; font-size: 26px; letter-spacing: -0.02em">Räkna på er restaurang</h3>
+<p style="margin: 0; color: #4B5563; font-size: 15px">Dra i reglagen. Beräkningen visar bara effekten av snabbare avdukning.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 15px"><label for="r-bord" style="font-weight: 600">Antal bord</label><span id="v-bord" style="font-weight: 600">24</span></div>
+<input id="r-bord" type="range" min="6" max="60" step="1" value="24" data-k="bord" style="width: 100%; min-height: 28px">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 15px"><label for="r-sitt" style="font-weight: 600">Sittningar per bord och kväll</label><span id="v-sitt" style="font-weight: 600">2</span></div>
+<input id="r-sitt" type="range" min="1" max="4" step="1" value="2" data-k="sitt" style="width: 100%; min-height: 28px">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 15px"><label for="r-spar" style="font-weight: 600">Minuter sparade per bordsbyte</label><span style="font-weight: 600"><span id="v-spar">5</span> min</span></div>
+<input id="r-spar" type="range" min="1" max="15" step="1" value="5" data-k="spar" style="width: 100%; min-height: 28px">
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; font-size: 15px"><label for="r-nota" style="font-weight: 600">Snittnota per sällskap</label><span style="font-weight: 600"><span id="v-nota">900</span> kr</span></div>
+<input id="r-nota" type="range" min="300" max="3000" step="50" value="900" data-k="nota" style="width: 100%; min-height: 28px">
+</div>
+</form>
+<div style="flex: 1 1 360px; padding: 36px; background: #0F1419; color: #F3F4F6; display: flex; flex-direction: column; justify-content: center; gap: 18px">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #FDBA74">Möjlig extra omsättning</div>
+<div style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(44px, 5vw, 64px); line-height: 1; letter-spacing: -0.03em; color: #FFFFFF" aria-live="polite"><span id="v-month"></span> kr<span style="font-size: 20px; font-weight: 500; color: #D1D5DB"> / mån</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 15px; color: #D1D5DB">
+<div><div style="font-size: 22px; font-weight: 700; color: #FFFFFF; font-family: 'Space Grotesk', sans-serif"><span id="v-extra"></span></div>extra sällskap per kväll</div>
+<div><div style="font-size: 22px; font-weight: 700; color: #FFFFFF; font-family: 'Space Grotesk', sans-serif"><span id="v-year"></span> kr</div>per år</div>
+</div>
+<p style="margin: 0; font-size: 13px; color: #9CA3AF">Uppskattning, inte en garanti. Antar 90 minuters sittning, 26 öppna kvällar i månaden och att det finns gäster som väntar på bord. Mersälj av dryck och dessert ingår inte.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- GDPR -->
+<section id="gdpr" style="max-width: 1200px; margin: 0 auto; padding: 96px 24px">
+<div style="display: flex; flex-wrap: wrap; gap: 40px; padding: 44px; border-radius: 24px; background: #E6F2F0; border: 1px solid #B9DAD4">
+<div style="flex: 1 1 360px; display: flex; flex-direction: column; gap: 16px">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"></path><path d="M8.5 12l2.5 2.5L16 9.5"></path></svg>
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #0F5C55">GDPR &amp; trygghet</div>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.12; letter-spacing: -0.03em">Vi ser borden – inte människorna.</h2>
+<p style="margin: 0; font-size: 17px; color: #1F3B38">Bildanalysen sker lokalt i restaurangen (Edge AI) på bråkdelen av en sekund. Ingen video lämnar lokalen och ingenting sparas.</p>
+</div>
+<ul style="flex: 1 1 420px; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px">
+<li style="padding: 20px; border-radius: 14px; background: #FFFFFF"><strong style="display: block; margin-bottom: 4px">Lokal Edge AI</strong><span style="color: #374151; font-size: 15px">Analysen körs på en enhet i restaurangen, inte i molnet.</span></li>
+<li style="padding: 20px; border-radius: 14px; background: #FFFFFF"><strong style="display: block; margin-bottom: 4px">Ansikten suddas direkt</strong><span style="color: #374151; font-size: 15px">Ingen ansiktsigenkänning – ansikten maskeras innan analysen.</span></li>
+<li style="padding: 20px; border-radius: 14px; background: #FFFFFF"><strong style="display: block; margin-bottom: 4px">Ingen videolagring</strong><span style="color: #374151; font-size: 15px">Inga videoströmmar eller bilder sparas.</span></li>
+<li style="padding: 20px; border-radius: 14px; background: #FFFFFF"><strong style="display: block; margin-bottom: 4px">Bara anonyma objekt</strong><span style="color: #374151; font-size: 15px">Systemet läser tallrikar, glas och stolar – aldrig personer.</span></li>
+</ul>
+</div>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt" style="background: #0F1419; color: #F3F4F6">
+<div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start">
+<div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 18px">
+<div style="font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #FDBA74">Kostnadsfri demo</div>
+<h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 4vw, 50px); line-height: 1.06; letter-spacing: -0.035em; color: #FFFFFF">Se Bordvakt i er egen matsal.</h2>
+<p style="margin: 0; font-size: 18px; color: #D1D5DB">15 minuter räcker. Vi visar hur notiserna fungerar och går igenom vad som krävs för just er restaurang.</p>
+<div style="margin-top: 10px; padding: 24px; border-radius: 16px; border: 1px solid #2B323C; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FDBA74" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
+<strong style="font-size: 17px; color: #FFFFFF">Boka direkt i kalendern</strong>
+</div>
+<p style="margin: 0; color: #D1D5DB; font-size: 15px">Välj en tid som passar – ett 15-minuters videomöte.</p>
+<a href="https://calendly.com/" style="display: inline-flex; align-self: flex-start; align-items: center; gap: 10px; min-height: 48px; padding: 0 22px; border-radius: 12px; background: #FFFFFF; color: #0F1419; text-decoration: none; font-weight: 600">Välj en tid
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"></path><path d="M8 7h9v9"></path></svg>
+</a>
+<span style="font-size: 12.5px; color: #9CA3AF">[ER CALENDLY-LÄNK]</span>
+</div>
+</div>
+
+<div style="flex: 1 1 440px; min-width: 0; padding: 36px; border-radius: 22px; background: #FFFFFF; color: #0F1419">
+<div id="sentBox" hidden>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 24px 0; align-items: flex-start" aria-live="polite">
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.7 2.7L16.5 9.5"></path></svg>
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 28px">Tack! Vi hör av oss inom en arbetsdag.</h3>
+<p style="margin: 0; color: #374151">Vill du gå snabbare fram? Boka en tid direkt i kalendern.</p>
+<button type="button" id="resetBtn" style="min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1.5px solid #0F1419; background: #FFFFFF; font: inherit; font-weight: 600; cursor: pointer">Skicka en ny förfrågan</button>
+</div>
+</div>
+<div id="formBox">
+<form id="demoForm" style="display: flex; flex-direction: column; gap: 18px">
+<h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 26px; letter-spacing: -0.02em">Boka en kostnadsfri demo</h3>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-namn" style="font-size: 14px; font-weight: 600">Namn</label><input id="f-namn" name="namn" type="text" required autocomplete="name" placeholder="För- och efternamn" style="min-height: 48px; padding: 0 14px; border-radius: 10px; border: 1.5px solid #9CA3AF; font: inherit; font-size: 16px; background: #FFFFFF; color: #0F1419"></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-rest" style="font-size: 14px; font-weight: 600">Restaurang</label><input id="f-rest" name="restaurang" type="text" required autocomplete="organization" placeholder="Restaurangens namn" style="min-height: 48px; padding: 0 14px; border-radius: 10px; border: 1.5px solid #9CA3AF; font: inherit; font-size: 16px; background: #FFFFFF; color: #0F1419"></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-tel" style="font-size: 14px; font-weight: 600">Telefon</label><input id="f-tel" name="telefon" type="tel" required autocomplete="tel" placeholder="070-123 45 67" style="min-height: 48px; padding: 0 14px; border-radius: 10px; border: 1.5px solid #9CA3AF; font: inherit; font-size: 16px; background: #FFFFFF; color: #0F1419"></div>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="f-mail" style="font-size: 14px; font-weight: 600">E-post</label><input id="f-mail" name="epost" type="email" required autocomplete="email" placeholder="namn@restaurang.se" style="min-height: 48px; padding: 0 14px; border-radius: 10px; border: 1.5px solid #9CA3AF; font: inherit; font-size: 16px; background: #FFFFFF; color: #0F1419"></div>
+</div>
+<button type="submit" style="min-height: 52px; border: none; border-radius: 12px; background: #C2410C; color: #FFFFFF; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer">Boka en kostnadsfri demo</button>
+<p style="margin: 0; font-size: 13px; color: #4B5563">Vi använder bara uppgifterna för att kontakta dig om demon.</p>
+</form>
+</div>
+</div>
+</div>
+</section>
+
+<footer style="background: #0F1419; color: #9CA3AF; border-top: 1px solid #2B323C">
+<div style="max-width: 1200px; margin: 0 auto; padding: 28px 24px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px">
+<span>© 2026 Bordvakt · [FÖRETAGSNAMN, ORG.NR]</span>
+<span>[E-POST] · [TELEFON]</span>
+</div>
+</footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
