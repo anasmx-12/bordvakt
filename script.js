@@ -1,5 +1,5 @@
 (function(){
-var feed=[{bord:3,text:'Bord 3 behöver dukas av',typ:'Avdukning',prio:'hög',level:'high'},{bord:7,text:'Bord 7 – tomma glas',typ:'Påfyllning',prio:'medel',level:'mid'},{bord:12,text:'Bord 12 söker kontakt',typ:'Service',prio:'hög',level:'high'},{bord:5,text:'Bord 5 redo för nästa sällskap',typ:'Ledigt',prio:'info',level:'info'},{bord:9,text:'Bord 9 – läge för dessert',typ:'Mersälj',prio:'medel',level:'mid'},{bord:1,text:'Bord 1 behöver dukas av',typ:'Avdukning',prio:'hög',level:'high'}];
+var feed=[{bord:3,text:'Bord 3 behöver dukas av',typ:'Avdukning',prio:'hög',level:'high'},{bord:7,text:'Bord 7 har väntat 5 min på servitör',typ:'Service',prio:'hög',level:'high'},{bord:12,text:'Bord 12 – nya gäster satte sig',typ:'Ny gäst',prio:'medel',level:'mid'},{bord:5,text:'Bord 5 redo för nästa sällskap',typ:'Ledigt',prio:'info',level:'info'},{bord:9,text:'Bord 9 har väntat 6 min på servitör',typ:'Service',prio:'hög',level:'high'},{bord:1,text:'Bord 1 behöver dukas av',typ:'Avdukning',prio:'hög',level:'high'}];
 function chip(l){return l==='high'?['#C2410C','#FFFFFF']:l==='mid'?['#FED7AA','#7C2D12']:['#DBEAFE','#1E3A8A'];}
 var idx=0,flip=false,ago=['nu','1 min','2 min','4 min'];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
@@ -27,7 +27,8 @@ document.querySelectorAll('input[type=range][data-k]').forEach(function(el){el.a
 calc();
 var f=document.getElementById('demoForm');
 f.addEventListener('submit',function(e){e.preventDefault();
- /* TODO: skicka formuläret till er backend, t.ex. Formspree eller e-post */
+ var d=new FormData(f),b='Namn: '+d.get('namn')+'\nRestaurang: '+d.get('restaurang')+'\nTelefon: '+d.get('telefon')+'\nE-post: '+d.get('epost')+'\n\nJag vill boka en kostnadsfri demo av Bordvakt.';
+ window.location.href='mailto:cammahhamza@gmail.com?subject='+encodeURIComponent('Demo av Bordvakt - '+d.get('restaurang'))+'&body='+encodeURIComponent(b);
  document.getElementById('formBox').hidden=true;document.getElementById('sentBox').hidden=false;});
 document.getElementById('resetBtn').addEventListener('click',function(){f.reset();document.getElementById('formBox').hidden=false;document.getElementById('sentBox').hidden=true;});
 })();
