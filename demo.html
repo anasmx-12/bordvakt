@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bordvakt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Familjen+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: mobile-first service app. Sticky header + tab bar, the floor plan as a grid of table tiles, a bottom sheet for actions. */
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --sunk: #e3e8ed;
+  --ink: #17202b;
+  --muted: #5b6876;
+  --line: #d3dae1;
+  --accent: #a8701a;      /* brass: brand */
+  --free: #1d8648;
+  --busy: #cc3427;
+  --clean: #4559c9;
+  --warn: #b7650b;
+  --shadow: 0 1px 2px rgba(23,32,43,.06), 0 4px 14px rgba(23,32,43,.06);
+  --f-display: "Bricolage Grotesque", "Familjen Grotesk", system-ui, sans-serif;
+  --f-body: "Familjen Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10151b; --surface: #18202a; --sunk: #0c1116; --ink: #e5eaef; --muted: #93a0ae;
+    --line: #2a3542; --accent: #dca44c; --free: #3dbd72; --busy: #f2594b; --clean: #8395ff; --warn: #f0a043;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10151b; --surface: #18202a; --sunk: #0c1116; --ink: #e5eaef; --muted: #93a0ae;
+  --line: #2a3542; --accent: #dca44c; --free: #3dbd72; --busy: #f2594b; --clean: #8395ff; --warn: #f0a043;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.45; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top { display: flex; align-items: center; gap: 12px; padding-block: 12px 10px; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; flex: 1; }
+.brand h1 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: -.01em; }
+.brand h1 b { color: var(--accent); font-weight: 800; }
+.brand .rest { color: var(--muted); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clock { font-family: var(--f-mono); font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.chip.live { color: var(--free); border-color: color-mix(in srgb, var(--free) 45%, transparent); }
+.chip.demo { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+.counts { display: flex; gap: 6px; padding-bottom: 10px; flex-wrap: wrap; }
+.count { display: flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: 8px; background: var(--sunk); font-size: 13px; }
+.count strong { font-family: var(--f-mono); font-size: 15px; font-variant-numeric: tabular-nums; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.dot.free { background: var(--free); } .dot.busy { background: var(--busy); } .dot.clean { background: var(--clean); } .dot.alert { background: var(--warn); }
+
+nav.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+nav.tabs button { background: none; border: 0; padding: 10px 12px 11px; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; display: flex; gap: 6px; align-items: center; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.badge { font-family: var(--f-mono); font-size: 11px; background: var(--warn); color: var(--surface); border-radius: 99px; padding: 0 6px; min-width: 18px; text-align: center; }
+
+main { padding-block: 18px 60px; }
+.demo-bar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; padding: 12px 14px; border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--line)); border-radius: 10px; margin-bottom: 16px; font-size: 14px; color: var(--muted); }
+.demo-bar p { margin: 0; flex: 1 1 280px; min-width: 0; }
+.demo-bar strong { color: var(--ink); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { background: var(--surface); border: 0; padding: 6px 11px; font-family: var(--f-mono); font-size: 13px; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 19px; margin: 0; text-wrap: balance; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.hint { color: var(--muted); font-size: 13px; }
+
+/* floor */
+.floor { display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 10px; }
+.tile { position: relative; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 11px 12px 12px; min-height: 112px; display: flex; flex-direction: column; gap: 4px; box-shadow: var(--shadow); overflow: hidden; }
+.tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--c); }
+.tile { --c: var(--free); }
+.tile.occupied { --c: var(--busy); background: color-mix(in srgb, var(--busy) 7%, var(--surface)); }
+.tile.needs_cleaning { --c: var(--clean); background: color-mix(in srgb, var(--clean) 8%, var(--surface)); }
+.tile.free { background: color-mix(in srgb, var(--free) 6%, var(--surface)); }
+.tile .row1 { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; margin-top: 2px; }
+.tile .name { font-family: var(--f-display); font-weight: 800; font-size: 18px; }
+.tile .seats { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.tile .state { font-size: 13px; font-weight: 600; color: var(--c); }
+.tile .timer { font-family: var(--f-mono); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: auto; }
+.tile .sub { font-size: 12px; color: var(--muted); }
+.meter { height: 4px; border-radius: 4px; background: var(--sunk); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--warn); }
+.tile.attn { border-color: var(--warn); box-shadow: 0 0 0 2px var(--warn), var(--shadow); }
+.tile.attn .flag { position: absolute; top: 10px; right: 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--warn); animation: pulse 1.2s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 60%, transparent); } 50% { box-shadow: 0 0 0 7px transparent; } }
+@media (prefers-reduced-motion: reduce) { .tile.attn .flag { animation: none; } .toast { transition: none !important; } }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: flex; align-items: center; gap: 6px; }
+
+.grid2 { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 760px) { .grid2 { grid-template-columns: minmax(0, 1fr); } .floor { --cols: 3 !important; } }
+@media (max-width: 400px) { .floor { gap: 8px; } .tile { padding: 10px; min-height: 104px; } .tile .timer { font-size: 17px; } }
+
+/* ticket feed */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.feed { list-style: none; margin: 0; padding: 4px 0; }
+.feed li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 9px 14px; border-top: 1px dashed var(--line); font-size: 14px; }
+.feed li:first-child { border-top: 0; }
+.feed time { font-family: var(--f-mono); font-size: 12px; color: var(--muted); padding-top: 2px; font-variant-numeric: tabular-nums; }
+.feed .k-alert { color: var(--warn); font-weight: 600; }
+.feed .k-cleaned { color: var(--free); }
+.empty { padding: 18px 14px; color: var(--muted); font-size: 14px; }
+
+/* attention list */
+.attn-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+.attn-card { display: grid; grid-template-columns: 6px minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 12px 0; overflow: hidden; }
+.attn-card .bar { align-self: stretch; background: var(--warn); }
+.attn-card.cleaning .bar { background: var(--clean); }
+.attn-card.checkin .bar { background: var(--accent); }
+.pin-root { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: var(--bg, #f4f1ea); }
+.pin-box { width: min(320px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; text-align: center; }
+.pin-box h2 { margin: 0 0 4px; font-family: var(--f-display); }
+.pin-box p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+.pin-box input { width: 100%; font: inherit; font-size: 28px; letter-spacing: .4em; text-align: center; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--ink); margin-bottom: 12px; }
+.pin-box .btn { width: 100%; }
+.pin-err { color: var(--busy); font-size: 14px; min-height: 1.4em; margin-top: 8px; }
+.attn-card h3 { margin: 0; font-size: 16px; font-family: var(--f-display); font-weight: 800; }
+.attn-card p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 9px 13px; font-weight: 600; font-size: 14px; }
+.btn.primary { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+/* entrance */
+.party { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.party button { min-width: 46px; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); font-weight: 600; }
+.party button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.next { display: flex; gap: 18px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 18px; border-radius: 14px; background: var(--ink); color: var(--surface); margin-bottom: 14px; }
+.next .lbl { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; opacity: .7; }
+.next .big { font-family: var(--f-display); font-weight: 800; font-size: 30px; line-height: 1.1; }
+.next .eta { font-family: var(--f-mono); font-size: 24px; font-weight: 600; }
+.qlist { list-style: none; margin: 0; padding: 0; }
+.qlist li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 14px; border-top: 1px solid var(--line); }
+.qlist li:first-child { border-top: 0; }
+.qlist .t { font-weight: 600; }
+.qlist .r { color: var(--muted); font-size: 13px; }
+.qlist .e { font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+
+/* report */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+@media (max-width: 700px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.kpi .v { font-family: var(--f-display); font-weight: 800; font-size: 26px; font-variant-numeric: tabular-nums; }
+.kpi .l { font-size: 13px; color: var(--muted); }
+.kpi.bad .v { color: var(--busy); }
+.insights { list-style: none; margin: 0 0 20px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.insights li { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 11px 14px; font-size: 14px; max-width: 75ch; }
+.heat-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+table.heat { border-collapse: separate; border-spacing: 3px; font-variant-numeric: tabular-nums; min-width: 620px; width: 100%; }
+.heat th { font-size: 11px; font-weight: 600; color: var(--muted); padding: 2px 4px; text-align: center; font-family: var(--f-mono); }
+.heat th.day { text-align: left; font-family: var(--f-body); font-size: 13px; color: var(--ink); white-space: nowrap; padding-right: 8px; }
+.heat td { text-align: center; border-radius: 5px; height: 34px; font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--ink); }
+.heat td.hot { color: var(--surface); }
+.heat-legend { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.swatch { display: inline-block; width: 26px; height: 12px; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+
+/* sheet + toast */
+.scrim { position: fixed; inset: 0; background: rgba(10,14,20,.45); z-index: 40; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; background: var(--surface); border-radius: 18px 18px 0 0; padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); max-width: 560px; margin: 0 auto; box-shadow: 0 -10px 40px rgba(0,0,0,.25); }
+.sheet h3 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 24px; }
+.sheet .meta { color: var(--muted); font-size: 14px; margin: 4px 0 14px; }
+.sheet .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sheet .acts .btn { padding: 13px; }
+.toasts { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); left: max(12px, env(safe-area-inset-left, 0px)); z-index: 50; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; pointer-events: none; }
+.toast { pointer-events: auto; width: min(380px, 100%); background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(12px); border: 1px solid var(--line); border-radius: 16px; padding: 11px 14px; box-shadow: 0 8px 30px rgba(0,0,0,.18); transition: transform .3s, opacity .3s; }
+.toast .app { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.toast .tt { font-weight: 600; margin-top: 3px; }
+.toast .tm { font-size: 13px; color: var(--muted); }
+.toast.out { opacity: 0; transform: translateY(-8px); }
+footer { color: var(--muted); font-size: 12px; padding-top: 28px; }
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><h1>Bord<b>vakt</b></h1><span class="rest" id="rest">Demo Bistro</span></div>
+      <span class="chip demo" id="mode">Demo</span>
+      <span class="clock" id="clock">--:--</span>
+    </div>
+    <div class="counts" id="counts"></div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tab-floor" data-view="floor" aria-selected="true">Golvet</button>
+      <button role="tab" id="tab-alerts" data-view="alerts" aria-selected="false">Larm <span class="badge" id="badge" hidden>0</span></button>
+      <button role="tab" id="tab-entrance" data-view="entrance" aria-selected="false">Entrén</button>
+      <button role="tab" id="tab-week" data-view="week" aria-selected="false">Veckorapport</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="demo-bar" id="demobar" hidden>
+    <p><strong>Demo av en restaurang med 12 bord.</strong> Tiden går 30 gånger snabbare. I skarpt läge läser AI:n bilden från restaurangens befintliga övervakningskameror. Tryck på ett bord för att agera som personal.</p>
+    <div class="seg" role="group" aria-label="Hastighet">
+      <button data-speed="1" aria-pressed="false">1×</button>
+      <button data-speed="30" aria-pressed="true">30×</button>
+      <button data-speed="120" aria-pressed="false">120×</button>
+    </div>
+  </div>
+
+  <section id="view-floor">
+    <div class="grid2">
+      <div>
+        <div class="section-head"><h2>Matsalen just nu</h2><span class="hint">Tryck på ett bord</span></div>
+        <div class="floor" id="floor"></div>
+        <div class="legend">
+          <span><i class="dot free"></i>Ledigt</span>
+          <span><i class="dot busy"></i>Gäster sitter</span>
+          <span><i class="dot clean"></i>Lämnat, ej städat</span>
+          <span><i class="dot alert"></i>Behöver personal</span>
+        </div>
+      </div>
+      <div>
+        <div class="section-head"><h2>Händelser</h2><span class="hint" id="cams"></span></div>
+        <div class="panel"><ul class="feed" id="feed-side"></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-alerts" hidden>
+    <div class="section-head"><h2>Behöver åtgärd nu</h2><span class="hint">Samma larm skickas som push till personalens mobiler</span></div>
+    <div class="attn-list" id="attn"></div>
+    <div class="section-head"><h2>Logg</h2></div>
+    <div class="panel"><ul class="feed" id="feed-full"></ul></div>
+  </section>
+
+  <section id="view-entrance" hidden>
+    <div class="section-head"><h2>Hur många är sällskapet?</h2><span class="hint">Visar bara bord som rymmer sällskapet</span></div>
+    <div class="party" id="party" role="group" aria-label="Sällskapets storlek">
+      <button data-p="0" aria-pressed="true">Alla</button>
+      <button data-p="1" aria-pressed="false">1</button><button data-p="2" aria-pressed="false">2</button>
+      <button data-p="3" aria-pressed="false">3</button><button data-p="4" aria-pressed="false">4</button>
+      <button data-p="5" aria-pressed="false">5</button><button data-p="6" aria-pressed="false">6</button>
+    </div>
+    <div class="next" id="next"></div>
+    <div class="panel"><ul class="qlist" id="queue"></ul></div>
+    <p class="hint">Tiden räknas ut från hur länge gästerna har suttit och hur länge sällskap brukar sitta här, plus städtiden.</p>
+  </section>
+
+  <section id="view-week" hidden>
+    <div class="section-head"><h2>Senaste 7 dagarna</h2><span class="hint" id="week-note"></span></div>
+    <div class="kpis" id="kpis"></div>
+    <ul class="insights" id="insights"></ul>
+    <div class="section-head"><h2>Beläggning och bemanning per timme</h2><span class="hint">Siffran = servitörer som behövs</span></div>
+    <div class="heat-wrap"><table class="heat" id="heat"></table></div>
+    <div class="heat-legend" id="heat-legend"></div>
+  </section>
+
+  <footer>Bordvakt analyserar bilden lokalt i restaurangen. Ingen video sparas, bara bordens status och tider.</footer>
+</main>
+
+<div id="sheet-root" hidden>
+  <div class="scrim" id="scrim"></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sh-title">
+    <h3 id="sh-title"></h3>
+    <p class="meta" id="sh-meta"></p>
+    <div class="acts" id="sh-acts"></div>
+  </div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="pin-root" id="pin-root" hidden>
+  <form class="pin-box" id="pin-form">
+    <h2>Bordvakt</h2>
+    <p>Skriv restaurangens PIN-kod</p>
+    <input id="pin-in" type="password" inputmode="numeric" autocomplete="current-password" aria-label="PIN-kod" required>
+    <button class="btn primary" type="submit">Logga in</button>
+    <div class="pin-err" id="pin-err" role="alert"></div>
+  </form>
+</div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const WAIT_LIMIT = 300;
+  const WEEKDAYS = ["Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag", "Söndag"];
+
+  let mode = "demo";        // "live" eller "demo"
+  let state = null;
+  let view = "floor";
+  let party = 0;
+  let ws = null;
+  let seenFeed = new Set();
+  let firstRender = true;
+
+  // ---------------------------------------------------------------- formatting
+  const mmss = (s) => {
+    s = Math.max(0, Math.floor(s));
+    if (s >= 3600) return `${Math.floor(s / 3600)}:${String(Math.floor((s % 3600) / 60)).padStart(2, "0")} h`;
+    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  };
+  const guestsTxt = (n) => `${n} ${n === 1 ? "gäst" : "gäster"}`;
+  const mins = (s) => `${Math.max(0, Math.round(s / 60))} min`;
+  const etaText = (s) => (s <= 0 ? "Nu" : s < 90 ? "~1 min" : `~${Math.round(s / 60)} min`);
+  const clockOf = (ts) => new Date(ts * 1000).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" });
+
+  // ================================================================ DEMO SIMULATOR
+  const LAYOUT = [2, 2, 4, 4, 6, 2, 4, 4, 2, 6, 4, 2];
+  const demo = {
+    speed: 30, real0: Date.now(), sim0: 0, tables: [], feed: [], rng: mulberry(42), stats: null,
+  };
+  function mulberry(a) { return () => { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const R = (a, b) => a + demo.rng() * (b - a);
+  const simNow = () => demo.sim0 + ((Date.now() - demo.real0) / 1000) * demo.speed;
+  function setSpeed(sp) { const n = simNow(); demo.sim0 = n; demo.real0 = Date.now(); demo.speed = sp; }
+
+  function demoPlanParty(t, now, progress = 0) {
+    const late = demo.rng() < 0.3;
+    const dining = R(30, 75) * 60;
+    const start = now - progress * dining;
+    t.status = "occupied"; t.guests = 1 + Math.floor(demo.rng() * t.seats);
+    t.seated_at = start; t.first_waiter_at = null; t.last_alert = null; t.vacated_at = null;
+    t.checkin_at = null; t.checkin_done = false;
+    const checkin = dining > 50 * 60 && demo.rng() < 0.45;
+    t.plan = { waiter_at: start + (late ? R(330, 560) : R(45, 240)), end: start + dining, checkin };
+    if (progress > 0 && t.plan.waiter_at < now) t.first_waiter_at = t.plan.waiter_at;
+  }
+  function demoInit() {
+    const d = new Date(); d.setHours(18, 40, 0, 0);
+    demo.sim0 = d.getTime() / 1000; demo.real0 = Date.now();
+    const now = demo.sim0;
+    demo.tables = LAYOUT.map((seats, i) => ({ id: String(i + 1), name: `Bord ${i + 1}`, seats, floor: [i % 4, Math.floor(i / 4)], status: "free", status_since: now - R(60, 900), guests: 0 }));
+    demo.tables.forEach((t, i) => {
+      const r = demo.rng();
+      if (r < 0.55) demoPlanParty(t, now, R(0.05, 0.85));
+      else if (r < 0.66) { t.status = "needs_cleaning"; t.vacated_at = now - R(20, 200); t.plan = { cleaner_at: now + R(40, 300) }; t.last_alert = t.vacated_at; }
+      else { t.status = "free"; t.plan = { until: now + R(20, 600) }; }
+    });
+    // ett bord som snart passerar 5 minuter, så larmet syns direkt i demon
+    const t = demo.tables[2]; demoPlanParty(t, now); t.seated_at = now - 255; t.plan.waiter_at = now + 400;
+    demo.stats = demoReport(now);
+  }
+  function demoPush(t, type, text, kind) {
+    const e = { ts: simNow(), table: t.id, name: t.name, type, kind, text, id: `${t.id}-${type}-${Math.round(simNow())}-${demo.feed.length}` };
+    demo.feed.unshift(e); demo.feed.length = Math.min(demo.feed.length, 60);
+  }
+  function demoAlert(t, kind, now) {
+    t.last_alert = now;
+    const msg = kind === "waiter"
+      ? `${t.name}: gästerna har väntat ${Math.floor((now - t.seated_at) / 60)} min utan att en servitör kommit`
+      : kind === "checkin"
+      ? `${t.name}: ingen har varit vid bordet på ${Math.floor((now - t.first_waiter_at) / 60)} min – kolla om de vill beställa mer eller vill ha notan`
+      : `${t.name} är ledigt men inte städat – gör i ordning för nästa gäster`;
+    demoPush(t, "alert", msg, kind);
+  }
+  function demoStep() {
+    const now = simNow();
+    for (const t of demo.tables) {
+      if (t.status === "free" && now >= t.plan.until) {
+        demoPlanParty(t, now); t.status_since = now;
+        demoPush(t, "seated", `${t.name}: ${guestsTxt(t.guests)} satte sig`);
+      }
+      if (t.status === "occupied") {
+        if (!t.first_waiter_at && now >= t.plan.waiter_at) {
+          t.first_waiter_at = now;
+          demoPush(t, "waiter", `${t.name}: servitör på plats efter ${mmss(now - t.seated_at)}`);
+        }
+        if (t.first_waiter_at && t.plan.checkin && !t.checkin_at && now - t.seated_at >= 45 * 60 && now - t.first_waiter_at >= 15 * 60) {
+          t.checkin_at = now; demoAlert(t, "checkin", now);
+        }
+        if (!t.first_waiter_at && now - t.seated_at >= WAIT_LIMIT && (!t.last_alert || now - t.last_alert >= 180)) demoAlert(t, "waiter", now);
+        if (now >= t.plan.end) {
+          t.status = "needs_cleaning"; t.vacated_at = now; t.status_since = now;
+          t.plan = { cleaner_at: now + R(60, 420) };
+          demoPush(t, "left", `${t.name}: gästerna har gått`);
+          demoAlert(t, "cleaning", now);
+        }
+      }
+      if (t.status === "needs_cleaning") {
+        if (now >= t.plan.cleaner_at) {
+          t.status = "free"; t.status_since = now; t.guests = 0;
+          t.plan = { until: now + R(60, 1300) };
+          demoPush(t, "cleaned", `${t.name}: städat och redo`);
+        } else if (now - t.last_alert >= 240) demoAlert(t, "cleaning", now);
+      }
+    }
+  }
+  function demoAction(id, action) {
+    const t = demo.tables.find((x) => x.id === id); const now = simNow();
+    if (!t) return;
+    if (action === "served" && t.status === "occupied" && t.checkin_at && !t.checkin_done) {
+      t.checkin_done = true; demoPush(t, "waiter", `${t.name}: servitör var vid bordet (markerat i appen)`);
+    } else if (action === "served" && t.status === "occupied" && !t.first_waiter_at) {
+      t.first_waiter_at = now; demoPush(t, "waiter", `${t.name}: servitör på plats efter ${mmss(now - t.seated_at)} (markerat i appen)`);
+    } else if (action === "cleaned" && t.status === "needs_cleaning") {
+      t.status = "free"; t.status_since = now; t.guests = 0; t.plan = { until: now + R(120, 1300) };
+      demoPush(t, "cleaned", `${t.name}: städat och redo (markerat i appen)`);
+    } else if (action === "free") {
+      t.status = "free"; t.status_since = now; t.guests = 0; t.plan = { until: now + R(120, 1300) };
+      demoPush(t, "cleaned", `${t.name}: markerat som ledigt`);
+    } else if (action === "occupied" && t.status !== "occupied") {
+      demoPlanParty(t, now); t.guests = Math.min(2, t.seats); t.status_since = now;
+      demoPush(t, "seated", `${t.name}: ${t.guests} gäster satte sig (markerat i appen)`);
+    }
+    demoStep(); render(demoState());
+  }
+  function bucket(g) { return g <= 2 ? 1 : g <= 4 ? 2 : 3; }
+  function demoState() {
+    const now = simNow();
+    const dine = { 1: 48 * 60, 2: 58 * 60, 3: 72 * 60 }, clean = 4 * 60;
+    const tables = demo.tables.map((t) => {
+      const d = { id: t.id, name: t.name, seats: t.seats, floor: t.floor, status: t.status, guests: t.guests, attention: null, waiter_visited: !!t.first_waiter_at, waiting_s: null, response_s: null };
+      if (t.status === "occupied") {
+        d.elapsed_s = now - t.seated_at;
+        if (!t.first_waiter_at) { d.waiting_s = now - t.seated_at; if (d.waiting_s >= WAIT_LIMIT) d.attention = "waiter"; }
+        else {
+          d.response_s = t.first_waiter_at - t.seated_at;
+          if (t.checkin_at && !t.checkin_done) { d.attention = "checkin"; d.quiet_s = now - t.first_waiter_at; }
+        }
+        d.eta_s = Math.max(120, dine[bucket(t.guests)] - d.elapsed_s) + clean;
+        d.reason = d.elapsed_s > dine[bucket(t.guests)] ? "Gästerna har suttit länge" : "Gäster äter";
+      } else if (t.status === "needs_cleaning") {
+        d.elapsed_s = now - t.vacated_at; d.attention = "cleaning"; d.eta_s = Math.max(30, clean - d.elapsed_s); d.reason = "Ska städas";
+      } else { d.elapsed_s = now - t.status_since; d.eta_s = 0; d.reason = "Ledigt nu"; }
+      return d;
+    });
+    const queue = tables.map((t) => ({ table_id: t.id, name: t.name, seats: t.seats, status: t.status, eta_s: Math.round(t.eta_s), reason: t.reason }))
+      .filter((q) => !party || q.seats >= party).sort((a, b) => a.eta_s - b.eta_s || a.seats - b.seats);
+    return {
+      restaurant: "Demo Bistro", mode: "demo", now, rules: { waiter_alert_after_s: WAIT_LIMIT }, tables,
+      summary: summarize(tables), queue: queue.slice(0, 8),
+      feed: demo.feed.slice(0, 25).map((f) => ({ ...f, age_s: now - f.ts })),
+      cameras: [{ id: "cam1", ok: true }, { id: "cam2", ok: true }],
+    };
+  }
+  function summarize(tables) {
+    return {
+      total: tables.length, free: tables.filter((t) => t.status === "free").length,
+      occupied: tables.filter((t) => t.status === "occupied").length,
+      cleaning: tables.filter((t) => t.status === "needs_cleaning").length,
+      attention: tables.filter((t) => t.attention).length,
+      guests: tables.reduce((a, t) => a + (t.status === "occupied" ? t.guests : 0), 0),
+    };
+  }
+  function demoReport() {
+    const rng = mulberry(7);
+    const busy = (wd, h) => {
+      const lunch = Math.max(0, 1 - Math.abs(h - 12.3) / 1.6) * (wd < 5 ? 0.75 : 0.45);
+      const din = Math.max(0, 1 - Math.abs(h - 19) / 2.3) * [0.55, 0.55, 0.65, 0.75, 1, 1, 0.7][wd];
+      return Math.min(1, lunch + din);
+    };
+    const hours = []; for (let h = 11; h <= 22; h++) hours.push(h);
+    const total = 12, tpw = 5;
+    const heatmap = [], staffing = [], cells = [];
+    let late = 0, sessions = 0;
+    const lateCells = [];
+    for (let wd = 0; wd < 7; wd++) {
+      const hr = [], sr = [];
+      for (const h of hours) {
+        const b = busy(wd, h + 0.5);
+        const occ = Math.max(0, Math.min(total, b * 11.6 + (rng() - 0.5) * 1.2));
+        const peak = Math.min(total, occ * 1.15);
+        const need = peak > 0.2 ? Math.ceil(peak / tpw) : 0;
+        hr.push(Math.round(occ * 10) / 10); sr.push(need);
+        cells.push({ wd, hour: h, avg: occ, pct: Math.round((occ / total) * 100), waiters: need });
+        const s = Math.round(occ * 0.95); sessions += s;
+        const lp = 0.12 + 0.35 * b; late += s * lp;
+        if (s >= 4) lateCells.push({ wd, h, lp: lp + (wd === 4 && h === 18 ? 0.3 : 0) });
+      }
+      heatmap.push(hr); staffing.push(sr);
+    }
+    const peaks = [...cells].sort((a, b) => b.avg - a.avg);
+    const p = peaks[0];
+    const worst = lateCells.sort((a, b) => b.lp - a.lp)[0];
+    const quiet = cells.filter((c) => c.pct < 20 && c.waiters >= 1).length;
+    return {
+      demo: true, hours, heatmap, staffing, total_tables: total, tables_per_waiter: tpw, weekdays: WEEKDAYS,
+      kpi: { sessions, guests: Math.round(sessions * 2.3), avg_response_s: 254, late_pct: Math.round((late / sessions) * 100), avg_dining_min: 59, avg_cleaning_min: 4.2, alerts: Math.round(late * 1.15) },
+      insights: [
+        `Er mest belastade timme är ${WEEKDAYS[p.wd].toLowerCase()} kl ${p.hour}–${p.hour + 1}: i snitt ${p.avg.toFixed(1).replace(".", ",")} av ${total} bord upptagna. Planera minst ${p.waiters} servitörer då.`,
+        `${WEEKDAYS[worst.wd]} kl ${worst.h}–${worst.h + 1} väntade ${Math.round(worst.lp * 100)} % av sällskapen mer än 5 min på servitör – lägg till en person i det passet.`,
+        `${quiet} timmar i veckan var under 20 % av borden upptagna – där räcker en servitör.`,
+      ],
+    };
+  }
+
+  // ================================================================ LIVE (riktig server)
+  async function tryLive() {
+    if (!/^https?:$/.test(location.protocol)) return false;
+    try {
+      const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 2500);
+      const r = await fetch("api/state", { signal: ctl.signal, cache: "no-store" }); clearTimeout(to);
+      if (r.status === 401) return "pin";
+      if (!r.ok) return false;
+      const j = await r.json();
+      if (!j || !Array.isArray(j.tables)) return false;
+      state = j; return true;
+    } catch { return false; }
+  }
+  function connectWs() {
+    const url = `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}${location.pathname.replace(/[^/]*$/, "")}ws`;
+    ws = new WebSocket(url);
+    ws.onopen = () => ws.send(JSON.stringify({ party: party || null }));
+    ws.onmessage = (m) => { try { render(JSON.parse(m.data)); } catch {} };
+    ws.onclose = (ev) => { if (ev.code === 4401) return askPin(); $("#mode").textContent = "Återansluter…"; setTimeout(connectWs, 2000); };
+  }
+  async function act(id, action) {
+    closeSheet();
+    if (mode === "demo") return demoAction(id, action);
+    try {
+      const r = await fetch(`api/tables/${encodeURIComponent(id)}/action`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
+      if (r.status === 401) askPin();
+    } catch { toast("Kunde inte nå servern", "Kontrollera att datorn med Bordvakt är igång.", "fel"); }
+  }
+
+  function askPin() {
+    $("#pin-root").hidden = false; setTimeout(() => $("#pin-in").focus(), 50);
+  }
+  $("#pin-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector("button"); btn.disabled = true; $("#pin-err").textContent = "";
+    try {
+      const r = await fetch("api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pin: $("#pin-in").value }) });
+      if (!r.ok) { $("#pin-err").textContent = "Fel PIN-kod"; $("#pin-in").value = ""; return; }
+      $("#pin-root").hidden = true;
+      if ((await tryLive()) === true) { mode = "live"; render(state); if (!ws || ws.readyState > 1) connectWs(); }
+    } catch { $("#pin-err").textContent = "Kunde inte nå servern"; }
+    finally { btn.disabled = false; }
+  });
+
+  // ================================================================ RENDER
+  function render(s) {
+    state = s;
+    $("#rest").textContent = s.restaurant;
+    $("#clock").textContent = clockOf(s.now);
+    const modeEl = $("#mode");
+    if (s.mode === "live") { modeEl.className = "chip live"; modeEl.textContent = "Live"; }
+    else if (s.mode === "simulator") { modeEl.className = "chip demo"; modeEl.textContent = "Simulator"; }
+    else { modeEl.className = "chip demo"; modeEl.textContent = "Demo"; }
+    const sm = s.summary;
+    $("#counts").innerHTML =
+      `<span class="count"><i class="dot free"></i><strong>${sm.free}</strong> lediga</span>` +
+      `<span class="count"><i class="dot busy"></i><strong>${sm.occupied}</strong> upptagna</span>` +
+      `<span class="count"><i class="dot clean"></i><strong>${sm.cleaning}</strong> ska städas</span>` +
+      `<span class="count"><strong>${sm.guests}</strong> gäster</span>`;
+    const b = $("#badge"); b.hidden = !sm.attention; b.textContent = sm.attention;
+    const camsOk = s.cameras.filter((c) => c.ok).length;
+    $("#cams").textContent = s.mode === "live" ? `${camsOk} av ${s.cameras.length} kameror online` : `${s.cameras.length} kameror (simulerade)`;
+
+    // nya larm -> notis som på mobilen
+    for (const f of s.feed.slice().reverse()) {
+      const key = f.id || `${f.table}-${f.type}-${Math.round(f.ts)}`;
+      if (seenFeed.has(key)) continue;
+      seenFeed.add(key);
+      if (!firstRender && f.type === "alert") toast(f.kind === "waiter" ? `${f.name} behöver servitör` : f.kind === "checkin" ? `Kolla ${f.name}` : `Städa ${f.name}`, f.text, f.kind);
+    }
+    firstRender = false;
+
+    renderFloor(s); renderFeed(s);
+    if (view === "alerts") renderAttention(s);
+    if (view === "entrance") renderQueue(s);
+    if (sheetFor) renderSheet();
+  }
+
+  function renderFloor(s) {
+    const cols = Math.max(...s.tables.map((t) => (t.floor?.[0] ?? 0))) + 1;
+    const floor = $("#floor");
+    floor.style.setProperty("--cols", Math.min(Math.max(cols, 3), 6));
+    const order = [...s.tables].sort((a, b) => (a.floor?.[1] ?? 0) - (b.floor?.[1] ?? 0) || (a.floor?.[0] ?? 0) - (b.floor?.[0] ?? 0));
+    floor.innerHTML = order.map((t) => {
+      let state = "Ledigt", timer = "", sub = "", meter = "";
+      if (t.status === "occupied") {
+        if (!t.waiter_visited) {
+          state = t.attention ? "Väntar på servitör!" : "Väntar på servitör";
+          timer = mmss(t.waiting_s);
+          const pct = Math.min(100, (t.waiting_s / s.rules.waiter_alert_after_s) * 100);
+          meter = `<div class="meter" aria-hidden="true"><i style="width:${pct}%"></i></div>`;
+          sub = guestsTxt(t.guests);
+        } else {
+          state = t.attention === "checkin" ? "Kolla bordet!" : "Gäster sitter"; timer = mmss(t.elapsed_s);
+          sub = `${guestsTxt(t.guests)} · servitör efter ${mins(t.response_s ?? 0)}`;
+        }
+      } else if (t.status === "needs_cleaning") {
+        state = "Ska städas"; timer = mmss(t.elapsed_s); sub = "Gästerna har gått";
+      } else {
+        timer = "Redo"; sub = `Ledigt i ${mins(t.elapsed_s)}`;
+      }
+      return `<button class="tile ${t.status}${t.attention ? " attn" : ""}" data-id="${esc(t.id)}" aria-label="${esc(t.name)}, ${esc(state)}">
+        ${t.attention ? '<span class="flag"></span>' : ""}
+        <div class="row1"><span class="name">${esc(t.name.replace(/^Bord\s*/i, ""))}</span><span class="seats">${t.seats} pl.</span></div>
+        <span class="state">${esc(state)}</span>
+        <span class="timer">${timer}</span>${meter}
+        <span class="sub">${esc(sub)}</span>
+      </button>`;
+    }).join("");
+  }
+
+  function feedHtml(items) {
+    if (!items.length) return `<li class="empty">Inget har hänt än.</li>`;
+    return items.map((f) => `<li><time>${clockOf(f.ts)}</time><span class="k-${esc(f.type)}">${esc(f.text)}</span></li>`).join("");
+  }
+  function renderFeed(s) { $("#feed-side").innerHTML = feedHtml(s.feed.slice(0, 9)); $("#feed-full").innerHTML = feedHtml(s.feed); }
+
+  function renderAttention(s) {
+    const list = s.tables.filter((t) => t.attention).sort((a, b) => (b.waiting_s ?? b.elapsed_s) - (a.waiting_s ?? a.elapsed_s));
+    $("#attn").innerHTML = list.length ? list.map((t) => t.attention === "checkin"
+      ? `<div class="attn-card checkin"><span class="bar"></span><div><h3>${esc(t.name)}</h3><p>Ingen vid bordet på ${mmss(t.quiet_s ?? 0)}. Mer att dricka eller notan?</p></div><button class="btn primary" data-act="served" data-id="${esc(t.id)}">Jag tar det</button></div>`
+      : t.attention === "waiter"
+      ? `<div class="attn-card"><span class="bar"></span><div><h3>${esc(t.name)}</h3><p>${guestsTxt(t.guests)} har väntat ${mmss(t.waiting_s)} utan servitör</p></div><button class="btn primary" data-act="served" data-id="${esc(t.id)}">Jag tar det</button></div>`
+      : `<div class="attn-card cleaning"><span class="bar"></span><div><h3>${esc(t.name)}</h3><p>Lämnat för ${mmss(t.elapsed_s)} sedan, inte städat</p></div><button class="btn primary" data-act="cleaned" data-id="${esc(t.id)}">Städat</button></div>`
+    ).join("") : `<div class="panel empty">Allt är under kontroll. Inga bord väntar.</div>`;
+  }
+
+  function renderQueue(s) {
+    const q = s.queue;
+    const first = q[0];
+    $("#next").innerHTML = first
+      ? `<div><div class="lbl">Nästa lediga bord${party ? ` för ${party}` : ""}</div><div class="big">${esc(first.name)} · ${first.seats} platser</div></div><div class="eta">${etaText(first.eta_s)}</div>`
+      : `<div><div class="lbl">Inget bord</div><div class="big">Inget bord rymmer ${party} personer</div></div>`;
+    const dot = { free: "free", occupied: "busy", needs_cleaning: "clean" };
+    $("#queue").innerHTML = q.slice(1).map((x) => `<li><i class="dot ${dot[x.status]}"></i><div><div class="t">${esc(x.name)} · ${x.seats} pl.</div><div class="r">${esc(x.reason)}</div></div><div class="e">${etaText(x.eta_s)}</div></li>`).join("");
+  }
+
+  let report = null;
+  async function loadReport() {
+    if (mode === "live") {
+      try { report = await (await fetch("api/report?days=7", { cache: "no-store" })).json(); } catch { report = null; }
+    } else report = demo.stats;
+    renderReport();
+  }
+  function renderReport() {
+    const r = report;
+    if (!r) { $("#kpis").innerHTML = `<div class="panel empty">Rapporten kunde inte laddas.</div>`; return; }
+    $("#week-note").textContent = r.demo ? "Exempeldata från en vecka" : `${r.total_tables} bord · ${r.tables_per_waiter} bord per servitör`;
+    const k = r.kpi;
+    $("#kpis").innerHTML = [
+      [k.guests?.toLocaleString("sv-SE") ?? "–", "gäster", ""],
+      [k.avg_response_s != null ? mmss(k.avg_response_s) : "–", "snittid till servitör", ""],
+      [`${k.late_pct} %`, "väntade över 5 min", k.late_pct >= 15 ? "bad" : ""],
+      [k.avg_cleaning_min != null ? `${String(k.avg_cleaning_min).replace(".", ",")} min` : "–", "från lämnat till städat", ""],
+    ].map(([v, l, c]) => `<div class="kpi ${c}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+    $("#insights").innerHTML = (r.insights || []).map((t) => `<li>${esc(t)}</li>`).join("");
+    const hours = r.hours;
+    let html = `<thead><tr><th></th>${hours.map((h) => `<th>${String(h).padStart(2, "0")}</th>`).join("")}</tr></thead><tbody>`;
+    r.heatmap.forEach((row, wd) => {
+      html += `<tr><th class="day" scope="row">${r.weekdays[wd].slice(0, 3)}</th>`;
+      row.forEach((v, i) => {
+        const pct = Math.min(100, (v / r.total_tables) * 100);
+        const mix = Math.round(pct * 0.9);
+        const need = r.staffing[wd][i];
+        html += `<td class="${mix > 55 ? "hot" : ""}" style="background:color-mix(in srgb, var(--accent) ${mix}%, var(--sunk))" title="${r.weekdays[wd]} ${hours[i]}:00 – ${Math.round(pct)} % belagt, ${need} servitörer">${need || ""}</td>`;
+      });
+      html += "</tr>";
+    });
+    $("#heat").innerHTML = html + "</tbody>";
+    $("#heat-legend").innerHTML =
+      `<span><i class="swatch" style="background:color-mix(in srgb, var(--accent) 10%, var(--sunk))"></i>Lugnt</span>` +
+      `<span><i class="swatch" style="background:color-mix(in srgb, var(--accent) 50%, var(--sunk))"></i>Halvfullt</span>` +
+      `<span><i class="swatch" style="background:color-mix(in srgb, var(--accent) 90%, var(--sunk))"></i>Fullt</span>` +
+      `<span>Rutans siffra = antal servitörer som behövs den timmen</span>`;
+  }
+
+  // ---------------------------------------------------------------- sheet
+  let sheetFor = null;
+  function openSheet(id) { sheetFor = id; renderSheet(); $("#sheet-root").hidden = false; }
+  function closeSheet() { sheetFor = null; $("#sheet-root").hidden = true; }
+  function renderSheet() {
+    const t = state?.tables.find((x) => x.id === sheetFor); if (!t) return closeSheet();
+    $("#sh-title").textContent = `${t.name} · ${t.seats} platser`;
+    let meta = "Ledigt och städat.", acts = [["occupied", "Gäster satte sig", true]];
+    if (t.status === "occupied") {
+      meta = t.waiter_visited ? `${guestsTxt(t.guests)} har suttit i ${mmss(t.elapsed_s)}. Servitör kom efter ${mins(t.response_s ?? 0)}.` : `${guestsTxt(t.guests)} har väntat ${mmss(t.waiting_s)} på servitör.`;
+      acts = t.waiter_visited ? [["served", "Jag var vid bordet", t.attention === "checkin"], ["free", "Gästerna har gått", t.attention !== "checkin"]] : [["served", "Jag är vid bordet", true], ["free", "Gästerna har gått", false]];
+    } else if (t.status === "needs_cleaning") {
+      meta = `Gästerna gick för ${mmss(t.elapsed_s)} sedan. Bordet är inte städat.`;
+      acts = [["cleaned", "Bordet är städat", true]];
+    }
+    $("#sh-meta").textContent = meta;
+    $("#sh-acts").innerHTML = acts.map(([a, l, p]) => `<button class="btn ${p ? "primary" : ""}" data-act="${a}" data-id="${esc(t.id)}">${l}</button>`).join("") + `<button class="btn" id="sh-close">Stäng</button>`;
+  }
+
+  // ---------------------------------------------------------------- toast
+  function toast(title, msg, kind) {
+    const el = document.createElement("div");
+    el.className = "toast";
+    el.innerHTML = `<div class="app"><span>${kind === "cleaning" ? "🧽" : kind === "checkin" ? "🧾" : "🔔"} Bordvakt</span><span>nu</span></div><div class="tt">${esc(title)}</div><div class="tm">${esc(msg)}</div>`;
+    const box = $("#toasts"); box.prepend(el);
+    while (box.children.length > 3) box.lastChild.remove();
+    setTimeout(() => { el.classList.add("out"); setTimeout(() => el.remove(), 350); }, 5200);
+  }
+
+  // ---------------------------------------------------------------- events
+  function show(v) {
+    view = v;
+    document.querySelectorAll("nav.tabs button").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.view === v)));
+    ["floor", "alerts", "entrance", "week"].forEach((x) => ($(`#view-${x}`).hidden = x !== v));
+    if (v === "week") loadReport();
+    if (state) render(state);
+    try { localStorage.setItem("bv-view", v); } catch {}
+  }
+  document.querySelector("nav.tabs").addEventListener("click", (e) => { const b = e.target.closest("button[data-view]"); if (b) show(b.dataset.view); });
+  document.addEventListener("click", (e) => {
+    const tile = e.target.closest(".tile"); if (tile) return openSheet(tile.dataset.id);
+    const a = e.target.closest("[data-act]"); if (a) return act(a.dataset.id, a.dataset.act);
+    if (e.target.id === "sh-close" || e.target.id === "scrim") return closeSheet();
+    const sp = e.target.closest("[data-speed]");
+    if (sp) { setSpeed(+sp.dataset.speed); document.querySelectorAll("[data-speed]").forEach((b) => b.setAttribute("aria-pressed", String(b === sp))); }
+    const p = e.target.closest("[data-p]");
+    if (p) {
+      party = +p.dataset.p;
+      document.querySelectorAll("[data-p]").forEach((b) => b.setAttribute("aria-pressed", String(b === p)));
+      if (mode === "live" && ws?.readyState === 1) ws.send(JSON.stringify({ party: party || null }));
+      else if (mode === "demo") render(demoState());
+    }
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+
+  // ---------------------------------------------------------------- start
+  (async () => {
+    const live = await tryLive();
+    if (live === "pin") {
+      mode = "live"; askPin();
+    } else if (live) {
+      mode = "live";
+      render(state);
+      connectWs();
+    } else {
+      mode = "demo";
+      $("#demobar").hidden = false;
+      demoInit();
+      render(demoState());
+      setInterval(() => { demoStep(); render(demoState()); }, 500);
+    }
+    let v = "floor"; try { v = localStorage.getItem("bv-view") || "floor"; } catch {}
+    show(["floor", "alerts", "entrance", "week"].includes(v) ? v : "floor");
+  })();
+})();
+</script>

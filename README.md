@@ -9,6 +9,9 @@ Landningssida för Bordvakt, AI-driven servicestöd för restauranger.
 | `index.html` | Sidans HTML |
 | `styles.css` | Grundstil, animationer och fokusmarkering |
 | `script.js` | Notis-animationen, ROI-kalkylatorn och formuläret |
+| `demo.html` | Personalens app i demoläge (simulerad restaurang) |
+| `integritet.html` | Integritetspolicy |
+| `media/` | Reklamfilmen och dess förhandsbild |
 | `design-kalla/` | Källfiler från design-canvasen (används inte av webbsidan) |
 
 ## Publicera med GitHub Pages
